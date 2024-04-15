@@ -1,2 +1,2 @@
 # cmsc388jgroupproject
-group projecr
+group project
