@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Reviews</title>
+  </head>
+  <body>
+    <h1>All Reviews</h1>
+
+    {% if reviews %}
+    <ul>
+      {% for review in reviews %}
+      <li>{{ review }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>No reviews yet, why don't you leave one!</p>
+    {% endif %} {% if logged_in %}
+    <h2>Leave a Review</h2>
+    <form action="/submit_review" method="POST">
+      <textarea name="review" rows="4" cols="50"></textarea><br />
+      <input type="submit" value="Submit" />
+    </form>
+    {% else %}
+    <p>Please log in to leave a review.</p>
+    {% endif %}
+  </body>
+</html>
