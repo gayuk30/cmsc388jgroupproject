@@ -45,21 +45,24 @@ def register():
     else:
         return render_template('register.html')
 
+# TODO
 @app.route('/experience', methods = ['GET'])
 def experience():
     return render_template('experience.html')
 
+# TODO
 @app.route('/projects', methods = ['GET'])
 def projects():
     return render_template('projects.html')
 
+# TODO
 @app.route('/reviews', methods=['GET', 'POST'])
 def reviews():
     user = session.get('user')
     if user is not None:
         # User is logged in, pass the username into the template so when they leave a review, it will be associated with their username
         print(user)
-        return render_template('/reviews.html', username=session['user'])
+        return render_template('/reviews.html', username=session['user'], logged_in=True)
     else:
-        #If the user is not logged in, they can still view the reviews page, they just cannot leave a review
-        return render_template('/reviews.html')
+        # If the user is not logged in, they can still view the reviews page, they just cannot leave a review
+        return render_template('/reviews.html', logged_in=False)
