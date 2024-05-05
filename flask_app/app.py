@@ -16,6 +16,8 @@ mongo = PyMongo(app, tlsCAFile=certifi.where())
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
+users = Blueprint("users", __name__)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -26,8 +28,9 @@ def hello_world():
     return 'Hello'
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@users.route('/login', methods=['GET', 'POST'])
 def login():
+
     if current_user.is_authenticated:
         return redirect(url_for('hello_world'))
 
@@ -47,7 +50,7 @@ def login():
 
 
 
-@app.route('/register', methods = ['GET', 'POST'])
+@users.route('/register', methods = ['GET', 'POST'])
 def register():
 
     if current_user.is_authenticated:
