@@ -102,7 +102,8 @@ def submit_review():
         comment = request.form['comment']
         mongo.db.reviews.insert_one({
             'stars': stars,
-            'comment': comment
+            'comment': comment,
+            'username': current_user.username
         })
         return redirect(url_for('profile'))
 
