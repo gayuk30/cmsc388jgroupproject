@@ -1,9 +1,10 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Profile</title>
-  </head>
-  <body>
-    <h1>Profile</h1>
-  </body>
-</html>
+<head>
+  <title>Profile</title>
+</head>
+
+<h1>Bob</h1>
+{% if current_user.is_authenticated %}
+  <p>Welcome, {{ current_user.username }}!</p>
+{% else %}
+  <p><a href="/login">log in</a> or <a href="/register">register</a></p>
+{% endif %}

@@ -64,12 +64,20 @@ def register():
             return redirect(url_for('users.login'))
     return render_template('register.html', form=form)
 
+@users.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('profile'))
+
 app.register_blueprint(users)
 
 
 
 @employer.route('/job', methods = ['GET', 'POST'])
 def job():
+    form = JobForm()
+
     if request.method == 'POST':
         company = request.form['company']
         position = request.form['position']
@@ -83,7 +91,7 @@ def job():
 
         return redirect(url_for('profile'))
     
-    return render_template('job.html')
+    return render_template('job.html', form=form)
 
 @employer.route('/reviews', methods=['GET', 'POST'])
 def reviews():
