@@ -5,7 +5,7 @@ import certifi
 import os
 from flask_wtf import FlaskForm
 from forms import RegistrationForm, LoginForm, JobForm, ReviewForm    
-from models import User
+from models import User, Job, Review
 from flask_bcrypt import bcrypt
 
 app = Flask(__name__)
@@ -108,11 +108,12 @@ def submit_review():
     if request.method == 'POST':
         stars = request.form['stars']
         comment = request.form['comment']
+
         mongo.db.reviews.insert_one({
             'stars': stars,
-            'comment': comment,
-            'username': current_user.username
+            'comment': comment
         })
+
         return redirect(url_for('profile'))
 
 
