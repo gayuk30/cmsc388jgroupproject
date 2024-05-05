@@ -9,10 +9,13 @@ from models import User
 from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
+app.config['GOOGLE_MAPS_API_KEY'] = os.getenv('GOOGLE_MAPS_API_KEY')
 app.config['MONGO_URI'] = 'mongodb+srv://yer:HUtySU4t80h55iXJ@cluster0.vz6chxl.mongodb.net/Cluster0?retryWrites=true&w=majority&appName=Cluster0'
 app.config['SECRET_KEY'] = str(os.urandom(16))
 
+
 mongo = PyMongo(app, tlsCAFile=certifi.where())
+
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -27,9 +30,41 @@ employer = Blueprint("employer", __name__)
 def load_user(user_id):
     return User(user_id)
 
+
 @app.route('/')
 def profile():
-    return render_template('profile.html')
+    jobs = mongo.db.jobs.find({})
+    job_data = []
+
+    for job in jobs:
+        city = job['city']
+        response = requests.get(
+            'https://maps.googleapis.com/maps/api/geocode/json',
+            params={
+                'address': city,
+                'key': app.config['GOOGLE_MAPS_API_KEY']
+            }
+        )
+        results = response.json()
+
+        if results['status'] == 'OK':
+            geometry = results['results'][0]['geometry']['location']
+            job_data.append({
+                'lat': geometry['lat'],
+                'lng': geometry['lng'],
+                'description': job['description'],
+                'company': job['company'],
+                'position': job['position']
+            })
+        else:
+            print(f"Geocoding failed for {city} with status {results['status']}")
+
+    return render_template('profile.html', jobs=job_data)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
 
 @users.route('/login', methods=['GET', 'POST'])
 def login():
@@ -87,11 +122,13 @@ def job():
         company = request.form['company']
         position = request.form['position']
         description = request.form['description']
+        city = request.form['city']
         
         mongo.db.jobs.insert_one({
             'company': company,
             'position': position,
-            'description': description
+            'description': description,
+            'city': city 
         })
 
         return redirect(url_for('profile'))

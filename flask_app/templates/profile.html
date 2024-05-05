@@ -1,4 +1,4 @@
-<head>
+<!-- <head>
   <title>Profile</title>
 </head>
 
@@ -7,4 +7,65 @@
   <p>Welcome, {{ current_user.username }}!</p>
 {% else %}
   <p><a href="/login">log in</a> or <a href="/register">register</a></p>
-{% endif %}
+{% endif %} -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Bob</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=GOOGLE_MAPS_API_KEY&callback=initMap" async defer></script> 
+    <!-- add key -->
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bob</h1>
+    {% if current_user.is_authenticated %}
+        <p>Welcome, {{ current_user.username }}!</p>
+        <div id="map"></div>
+        <h2>Job History</h2>
+        <ul>
+            {% for job in jobs %}
+                <li>
+                    <strong>{{ job.company }}</strong> ({{ job.position }}) - {{ job.city }}
+                    <br>{{ job.description }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p><a href="/login">Log in</a> or <a href="/register">Register</a> to view the full profile.</p>
+    {% endif %}
+    <script>
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 4,
+                center: {lat: 0, lng: 0} // Adjust based on your data or user location
+            });
+            var bounds = new google.maps.LatLngBounds();
+            {% for job in jobs %}
+            var latLng = new google.maps.LatLng({{ job.lat }}, {{ job.lng }});
+            var marker = new google.maps.Marker({
+                position: latLng,
+                map: map,
+                title: "{{ job.company }} ({{ job.position }})"
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: "<div><strong>{{ job.company }}</strong><p>{{ job.description }}</p></div>"
+            });
+            marker.addListener('click', function() {
+                infowindow.open(map, marker);
+            });
+            bounds.extend(latLng);
+            {% endfor %}
+            map.fitBounds(bounds);
+        }
+    </script>
+</body>
+</html>
+

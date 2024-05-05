@@ -19,6 +19,7 @@ class JobForm(FlaskForm):
     company = StringField('Company', validators=[InputRequired()])
     position = StringField('Position', validators=[InputRequired()])
     description = TextAreaField('Description', validators=[InputRequired()])
+    city = StringField('City', validators=[InputRequired()])
     submit = SubmitField('Submit')
 
 class ReviewForm(FlaskForm):
