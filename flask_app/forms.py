@@ -19,4 +19,6 @@ class ProjectForm(FlaskForm):
     pass
 
 class ReviewForm(FlaskForm):
-    pass
+    stars = SelectField('Stars', choices=[(str(i), str(i)) for i in range(6)], validators=[InputRequired()])
+    review = TextAreaField('Review')
+    submit = SubmitField('Submit')
