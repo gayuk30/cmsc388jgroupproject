@@ -7,6 +7,7 @@ from flask_wtf import FlaskForm
 from forms import RegistrationForm, LoginForm, JobForm, ReviewForm    
 from models import User
 from flask_bcrypt import Bcrypt
+import requests
 
 app = Flask(__name__)
 app.config['GOOGLE_MAPS_API_KEY'] = os.getenv('GOOGLE_MAPS_API_KEY')
@@ -35,27 +36,29 @@ def profile():
     job_data = []
 
     for job in jobs:
-        city = job['city']
-        response = requests.get(
-            'https://maps.googleapis.com/maps/api/geocode/json',
-            params={
-                'address': city,
-                'key': app.config['GOOGLE_MAPS_API_KEY']
-            }
-        )
-        results = response.json()
+        city = job.get('city')
+        
+        if city is not None:
+            response = requests.get(
+                'https://maps.googleapis.com/maps/api/geocode/json',
+                params={
+                    'address': city,
+                    'key': app.config['GOOGLE_MAPS_API_KEY']
+                }
+            )
+            results = response.json()
 
-        if results['status'] == 'OK':
-            geometry = results['results'][0]['geometry']['location']
-            job_data.append({
-                'lat': geometry['lat'],
-                'lng': geometry['lng'],
-                'description': job['description'],
-                'company': job['company'],
-                'position': job['position']
-            })
-        else:
-            print(f"Geocoding failed for {city} with status {results['status']}")
+            if results['status'] == 'OK':
+                geometry = results['results'][0]['geometry']['location']
+                job_data.append({
+                    'lat': geometry['lat'],
+                    'lng': geometry['lng'],
+                    'description': job['description'],
+                    'company': job['company'],
+                    'position': job['position']
+                })
+            else:
+                print(f"Geocoding failed for {city} with status {results['status']}")
 
     return render_template('profile.html', jobs=job_data)
 
@@ -118,11 +121,13 @@ def job():
         company = request.form['company']
         position = request.form['position']
         description = request.form['description']
+        city = request.form['city']
         
         mongo.db.jobs.insert_one({
             'company': company,
             'position': position,
-            'description': description
+            'description': description,
+            'city': city
         })
 
         return redirect(url_for('profile'))

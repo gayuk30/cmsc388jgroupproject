@@ -1,14 +1,4 @@
-<!-- <head>
-  <title>Profile</title>
-</head>
-
-<h1>Bob</h1>
-{% if current_user.is_authenticated %}
-  <p>Welcome, {{ current_user.username }}!</p>
-{% else %}
-  <p><a href="/login">log in</a> or <a href="/register">register</a></p>
-{% endif %} -->
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -52,4 +42,24 @@
         {% endif %}
     </div>
 </body>
-</html>
+</html> -->
+
+<h1>Bob's Profile</h1>
+{% if current_user.is_authenticated %}
+  <p>Welcome, {{ current_user.username }}!</p>
+{% else %}
+  <p><a href="/login">log in</a> or <a href="/register">register</a></p>
+{% endif %}
+
+<h2>Job History</h2>
+{% if jobs %}
+    <ul>
+        {% for job in jobs %}
+        <li>
+            <strong>{{ job.company }}</strong> - {{ job.position }}
+            <div><small>{{ job.description }}</small></div>
+            <div>Located in: {{ job.city }}</div>
+        </li>
+        {% endfor %}
+    </ul>
+{% endif %}
