@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, url_for, session
+from flask import Blueprint, Flask, render_template, redirect, request, url_for, session
 from flask_pymongo import PyMongo
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 import certifi
@@ -67,6 +67,7 @@ def register():
             return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
+app.register_blueprint(users)
 
 # TODO
 @app.route('/experience', methods = ['GET'])
