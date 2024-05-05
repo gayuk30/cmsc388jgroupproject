@@ -1,0 +1,5 @@
+.DS_Store
+.env
+.gitlab-ci.yml
+venv
+__pycache__
