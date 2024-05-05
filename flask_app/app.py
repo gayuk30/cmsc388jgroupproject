@@ -13,9 +13,7 @@ app.config['GOOGLE_MAPS_API_KEY'] = os.getenv('GOOGLE_MAPS_API_KEY')
 app.config['MONGO_URI'] = 'mongodb+srv://yer:HUtySU4t80h55iXJ@cluster0.vz6chxl.mongodb.net/Cluster0?retryWrites=true&w=majority&appName=Cluster0'
 app.config['SECRET_KEY'] = str(os.urandom(16))
 
-
 mongo = PyMongo(app, tlsCAFile=certifi.where())
-
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -63,8 +61,6 @@ def profile():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
 
 @users.route('/login', methods=['GET', 'POST'])
 def login():
@@ -122,13 +118,11 @@ def job():
         company = request.form['company']
         position = request.form['position']
         description = request.form['description']
-        city = request.form['city']
         
         mongo.db.jobs.insert_one({
             'company': company,
             'position': position,
-            'description': description,
-            'city': city 
+            'description': description
         })
 
         return redirect(url_for('profile'))
