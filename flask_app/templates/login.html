@@ -1,17 +1,31 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Login</title>
-</head>
-<body>
-    <form action="/login" method="POST">
+  </head>
+  <body>
+    <h1>Login</h1>
+
+    {% if form %}
+    <form method="POST" action="/login">
+      {{ form.csrf_token }}
+      <div>
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required />
-
+        {{ form.username }}
+      </div>
+      <div>
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required />
-
+        {{ form.password }}
+      </div>
+      <div>
         <input type="submit" value="Login" />
+      </div>
     </form>
-</body>
+    {% endif %} {% if error %}
+
+    <p>Error: {{ error }}</p>
+    {% endif %}
+
+    <p>Don't have an account? <a href="/register">Register</a></p>
+  </body>
 </html>
