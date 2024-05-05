@@ -17,7 +17,7 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
 users = Blueprint("users", __name__)
-
+employer = Blueprint("employer", __name__)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -26,7 +26,6 @@ def load_user(user_id):
 @app.route('/')
 def hello_world():
     return 'Hello'
-
 
 @users.route('/login', methods=['GET', 'POST'])
 def login():
@@ -48,8 +47,6 @@ def login():
             return render_template('login.html', form=form, error='Invalid username or password')
     return render_template('login.html', form=form)
 
-
-
 @users.route('/register', methods = ['GET', 'POST'])
 def register():
 
@@ -69,23 +66,18 @@ def register():
 
 app.register_blueprint(users)
 
-# TODO
-@app.route('/experience', methods = ['GET'])
-def experience():
-    return render_template('experience.html')
 
-# TODO
-@app.route('/projects', methods = ['GET'])
-def projects():
-    return render_template('projects.html')
 
-# TODO
-@app.route('/reviews', methods=['GET', 'POST'])
+@employer.route('/job', methods = ['GET', 'POST'])
+def job():
+    return render_template('job.html')
+
+@employer.route('/reviews', methods=['GET', 'POST'])
 def reviews():
     form = ReviewForm()
     if current_user.is_authenticated:
-        # User is logged in, pass the username into the template so when they leave a review, it will be associated with their username
         return render_template('/reviews.html', username=current_user.username, logged_in=True, form=form)
     else:
-        # If the user is not logged in, they can still view the reviews page, they just cannot leave a review
         return render_template('/reviews.html', logged_in=False)
+
+app.register_blueprint(employer)
