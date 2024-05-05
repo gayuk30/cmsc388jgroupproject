@@ -24,8 +24,8 @@ def load_user(user_id):
     return User(user_id)
 
 @app.route('/')
-def hello_world():
-    return 'Hello'
+def profile():
+    return render_template('profile.html')
 
 @users.route('/login', methods=['GET', 'POST'])
 def login():
