@@ -4,7 +4,7 @@ from flask_login import LoginManager, current_user, login_user, logout_user, log
 import certifi
 import os
 from flask_wtf import FlaskForm
-from forms import RegistrationForm, LoginForm, ProjectForm, ReviewForm    
+from forms import RegistrationForm, LoginForm, JobForm, ReviewForm    
 from models import User
 
 app = Flask(__name__)
@@ -31,7 +31,7 @@ def profile():
 def login():
 
     if current_user.is_authenticated:
-        return redirect(url_for('hello_world'))
+        return redirect(url_for('profile'))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -41,7 +41,7 @@ def login():
         if user:
             # User found, log them in and redirect to reviews page
             login_user(User(username))
-            return redirect(url_for('reviews'))
+            return redirect(url_for('profile'))
         else:
             # User not found, display an error message
             return render_template('login.html', form=form, error='Invalid username or password')
@@ -51,7 +51,7 @@ def login():
 def register():
 
     if current_user.is_authenticated:
-        return redirect(url_for('hello_world'))
+        return redirect(url_for('profile'))
 
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -61,7 +61,7 @@ def register():
             return render_template('register.html', form=form, error='Username already exists, try logging in.')
         else:
             mongo.db.users.insert_one({'username': username, 'password': password})
-            return redirect(url_for('login'))
+            return redirect(url_for('users.login'))
     return render_template('register.html', form=form)
 
 app.register_blueprint(users)
@@ -70,6 +70,19 @@ app.register_blueprint(users)
 
 @employer.route('/job', methods = ['GET', 'POST'])
 def job():
+    if request.method == 'POST':
+        company = request.form['company']
+        position = request.form['position']
+        description = request.form['description']
+        
+        mongo.db.jobs.insert_one({
+            'company': company,
+            'position': position,
+            'description': description
+        })
+
+        return redirect(url_for('profile'))
+    
     return render_template('job.html')
 
 @employer.route('/reviews', methods=['GET', 'POST'])

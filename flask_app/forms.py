@@ -15,8 +15,11 @@ class RegistrationForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', validators=[InputRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
 
-class ProjectForm(FlaskForm):
-    pass
+class JobForm(FlaskForm):
+    company = StringField('Company', validators=[InputRequired()])
+    position = StringField('Position', validators=[InputRequired()])
+    description = TextAreaField('Description', validators=[InputRequired()])
+    submit = SubmitField('Submit')
 
 class ReviewForm(FlaskForm):
     stars = SelectField('Stars', choices=[(str(i), str(i)) for i in range(6)], validators=[InputRequired()])
