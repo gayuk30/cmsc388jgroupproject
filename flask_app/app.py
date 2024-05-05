@@ -6,6 +6,7 @@ import os
 from flask_wtf import FlaskForm
 from forms import RegistrationForm, LoginForm, JobForm, ReviewForm    
 from models import User
+from flask_bcrypt import bcrypt
 
 app = Flask(__name__)
 app.config['MONGO_URI'] = 'mongodb+srv://yer:HUtySU4t80h55iXJ@cluster0.vz6chxl.mongodb.net/Cluster0?retryWrites=true&w=majority&appName=Cluster0'
@@ -56,11 +57,11 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         username = form.username.data
-        password = form.password.data
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
         if mongo.db.users.find_one({'username': username}) is not None:
             return render_template('register.html', form=form, error='Username already exists, try logging in.')
         else:
-            mongo.db.users.insert_one({'username': username, 'password': password})
+            mongo.db.users.insert_one({'username': username, 'password': hashed_password})
             return redirect(url_for('users.login'))
     return render_template('register.html', form=form)
 
@@ -92,5 +93,18 @@ def reviews():
         return render_template('/reviews.html', username=current_user.username, logged_in=True, form=form)
     else:
         return render_template('/reviews.html', logged_in=False)
+
+
+@app.route('/submit_review', methods=['POST'])
+def submit_review():
+    if request.method == 'POST':
+        stars = request.form['stars']
+        comment = request.form['comment']
+        mongo.db.reviews.insert_one({
+            'stars': stars,
+            'comment': comment
+        })
+        return redirect(url_for('profile'))
+
 
 app.register_blueprint(employer)
