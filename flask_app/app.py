@@ -6,7 +6,7 @@ import os
 from flask_wtf import FlaskForm
 from forms import RegistrationForm, LoginForm, JobForm, ReviewForm    
 from models import User
-from flask_bcrypt import bcrypt
+from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 app.config['MONGO_URI'] = 'mongodb+srv://yer:HUtySU4t80h55iXJ@cluster0.vz6chxl.mongodb.net/Cluster0?retryWrites=true&w=majority&appName=Cluster0'
@@ -16,6 +16,9 @@ mongo = PyMongo(app, tlsCAFile=certifi.where())
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
+bcrypt = Bcrypt(app)
+
+
 
 users = Blueprint("users", __name__)
 employer = Blueprint("employer", __name__)
@@ -38,8 +41,9 @@ def login():
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-        user = mongo.db.users.find_one({'username': username, 'password': password})
-        if user:
+        user = mongo.db.users.find_one({'username': username})
+        print(user)
+        if user and bcrypt.check_password_hash(user['password'], password):
             # User found, log them in and redirect to reviews page
             login_user(User(username))
             return redirect(url_for('profile'))
