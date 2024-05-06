@@ -85,7 +85,7 @@ def logout():
 
 app.register_blueprint(users)
 
-
+# done
 
 @employer.route('/job', methods = ['GET', 'POST'])
 def job():
