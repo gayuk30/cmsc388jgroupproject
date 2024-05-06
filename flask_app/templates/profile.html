@@ -1,66 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bob's Resume</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
-<body class="bg-gray-100 font-sans">
+    <!-- Include the Google Maps JavaScript API with your actual API key -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBka3GVX6IKfl4keozx5qTMpiRgpxusc9k"
+      async
+      defer
+    ></script>
+    <style>
+      #map {
+        height: 400px; /* Adjust the height of the map */
+        width: 100%; /* Adjust the width of the map if necessary */
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 font-sans">
     <nav class="bg-gray-900 text-white shadow-lg">
-        <div class="container mx-auto flex justify-between items-center py-4 px-6">
-            <div class="text-lg font-semibold">
-                <a href="/" class="hover:text-gray-300 transition-colors duration-200">Bob's Resume</a>
-            </div>
-            <div class="space-x-4">
-                <a href="/job" class="hover:bg-gray-700 rounded-md px-3 py-2 transition-colors duration-200">Jobs</a>
-                <a href="/reviews" class="hover:bg-gray-700 rounded-md px-3 py-2 transition-colors duration-200">Reviews</a>
-                {% if not current_user.is_authenticated %}
-                <a href="/login" class="hover:bg-gray-700 rounded-md px-3 py-2 transition-colors duration-200">Login</a>
-                <a href="/register" class="hover:bg-gray-700 rounded-md px-3 py-2 transition-colors duration-200">Register</a>
-                {% endif %}
-                {% if current_user.is_authenticated %}
-                <a href="/logout" class="hover:bg-gray-700 rounded-md px-3 py-2 transition-colors duration-200">Logout</a>
-                {% endif %}
-            </div>
+      <div
+        class="container mx-auto flex justify-between items-center py-4 px-6"
+      >
+        <div class="text-lg font-semibold">
+          <a href="/" class="hover:text-gray-300 transition-colors duration-200"
+            >Bob's Resume</a
+          >
         </div>
+        <div class="space-x-4">
+          <a
+            href="/job"
+            class="hover:bg-gray-700 rounded-md px-3 py-2 transition-colors duration-200"
+            >Jobs</a
+          >
+          <a
+            href="/reviews"
+            class="hover:bg-gray-700 rounded-md px-3 py-2 transition-colors duration-200"
+            >Reviews</a
+          >
+          {% if not current_user.is_authenticated %}
+          <a
+            href="/login"
+            class="hover:bg-gray-700 rounded-md px-3 py-2 transition-colors duration-200"
+            >Login</a
+          >
+          <a
+            href="/register"
+            class="hover:bg-gray-700 rounded-md px-3 py-2 transition-colors duration-200"
+            >Register</a
+          >
+          {% endif %} {% if current_user.is_authenticated %}
+          <a
+            href="/logout"
+            class="hover:bg-gray-700 rounded-md px-3 py-2 transition-colors duration-200"
+            >Logout</a
+          >
+          {% endif %}
+        </div>
+      </div>
     </nav>
 
-    <header class="bg-gradient-to-r from-green-400 via-blue-400 to-purple-500 text-white text-center py-8 mb-6">
-        <h1 class="text-5xl font-bold">Welcome to Bob's Resume</h1>
-        <p class="mt-3"><a href="/path_to_resume.pdf" class="underline hover:text-gray-200">Download Resume</a></p>
+    <header
+      class="bg-gradient-to-r from-green-400 via-blue-400 to-purple-500 text-white text-center py-8 mb-6"
+    >
+      <h1 class="text-5xl font-bold">Welcome to Bob's Resume</h1>
+      <p class="mt-3">
+        <a href="/path_to_resume.pdf" class="underline hover:text-gray-200"
+          >Download Resume</a
+        >
+      </p>
     </header>
 
     <main class="container mx-auto px-6">
-        <section class="bg-white shadow-md rounded-lg p-6 mb-6">
-            <h2 class="text-2xl font-semibold border-b pb-4">Bob's Profile</h2>
-            {% if current_user.is_authenticated %}
-                <p class="mt-3">Welcome, {{ current_user.username }}!</p>
-            {% else %}
-                <p class="mt-3"><a href="/login" class="text-blue-500 hover:text-blue-700">Log in</a> or <a href="/register" class="text-blue-500 hover:text-blue-700">Register</a></p>
-            {% endif %}
-        </section>
+      <section class="bg-white shadow-md rounded-lg p-6 mb-6">
+        <h2 class="text-2xl font-semibold border-b pb-4">Bob's Profile</h2>
+        {% if current_user.is_authenticated %}
+        <p class="mt-3">Welcome, {{ current_user.username }}!</p>
+        {% else %}
+        <p class="mt-3">
+          <a href="/login" class="text-blue-500 hover:text-blue-700">Log in</a>
+          or
+          <a href="/register" class="text-blue-500 hover:text-blue-700"
+            >Register</a
+          >
+        </p>
+        {% endif %}
+      </section>
 
-        <section class="bg-white shadow-md rounded-lg p-6">
-            <h2 class="text-2xl font-semibold border-b pb-4">Job History</h2>
-            {% if jobs %}
-                <ul class="list-disc pl-8 mt-4">
-                    {% for job in jobs %}
-                        <li class="mt-2">
-                            <strong>{{ job.company }}</strong> - {{ job.position }}
-                            <div><small>{{ job.description }}</small></div>
-                            <div class="text-sm text-gray-600">Located in: {{ job.city }}</div>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>No job history available.</p>
-            {% endif %}
-        </section>
+      <section class="bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-2xl font-semibold border-b pb-4">Job History</h2>
+        {% if jobs %}
+        <ul class="list-disc pl-8 mt-4">
+          {% for job in jobs %}
+          <li class="mt-2">
+            <strong>{{ job.company }}</strong> - {{ job.position }}
+            <div><small>{{ job.description }}</small></div>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>No job history available.</p>
+        {% endif %}
+        <!-- Map container -->
+        <div id="map"></div>
+      </section>
     </main>
-</body>
+
+    {% if jobs %}
+    <script>
+
+      function initMap(waypoints) {
+        // Create a map object
+        const map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: 37.0902, lng: -95.7129 }, // Set the center of the map to the United States
+          zoom: 4, // Set the initial zoom level
+        });
+
+        // Define an array of waypoints
+
+        // Loop through the waypoints and create markers for each
+        waypoints.forEach((waypoint) => {
+          new google.maps.Marker({
+            position: waypoint,
+            map: map,
+          });
+        });
+      }
+
+      window.onload = function () {
+        initMap({{ waypoints | tojson }});
+      };
+    </script>
+    {% endif %}
+  </body>
 </html>
-
-
-

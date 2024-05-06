@@ -9,6 +9,7 @@ from models import User
 from flask_bcrypt import Bcrypt
 import requests
 
+
 app = Flask(__name__)
 app.config['GOOGLE_MAPS_API_KEY'] = os.getenv('GOOGLE_MAPS_API_KEY')
 app.config['MONGO_URI'] = 'mongodb+srv://yer:HUtySU4t80h55iXJ@cluster0.vz6chxl.mongodb.net/Cluster0?retryWrites=true&w=majority&appName=Cluster0'
@@ -33,7 +34,16 @@ def load_user(user_id):
 @app.route('/')
 def profile():
     jobs = mongo.db.jobs.find({})
-    return render_template('profile.html', jobs=jobs)
+    # gmaps = googlemaps.Client(key='AIzaSyBka3GVX6IKfl4keozx5qTMpiRgpxusc9k')
+    # map = KeplerGl(height=600, width=800)
+    # map.add_data(data=jobs, name='jobs')
+    # return map._repr_html_()
+    waypoints = []
+    for job in jobs:
+        waypoints.append({'lat': float(job['latitude']), 'lng': float(job['longitude'])})
+
+    jobs = mongo.db.jobs.find({})
+    return render_template('profile.html', jobs=jobs, waypoints=waypoints)
 
 
 if __name__ == '__main__':
