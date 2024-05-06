@@ -7,13 +7,13 @@
     <h1>All Reviews</h1>
     {% if username %}
     <p>Username: {{ username }}</p>
-    {% endif %} {% if reviews %}
-    <ul>
-      {% for review in reviews %}
-      <li>{{ review }}</li>
-      {% endfor %}
-    </ul>
-    {% else %}
+    {% endif %} {% if reviews %} {% for review in reviews %}
+    <div>
+      <p>{{ review.username }}</p>
+      <p>{{ review.stars }}</p>
+      <p>{{ review.comment }}</p>
+    </div>
+    {% endfor %} {% else %}
     <p>No reviews yet, why don't you leave one!</p>
     {% endif %} {% if logged_in %}
 

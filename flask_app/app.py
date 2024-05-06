@@ -136,11 +136,12 @@ def job():
 
 @employer.route('/reviews', methods=['GET', 'POST'])
 def reviews():
+    reviews = mongo.db.reviews.find({})
     form = ReviewForm()
     if current_user.is_authenticated:
-        return render_template('/reviews.html', username=current_user.username, logged_in=True, form=form)
+        return render_template('/reviews.html', username=current_user.username, logged_in=True, form=form, reviews=reviews)
     else:
-        return render_template('/reviews.html', logged_in=False)
+        return render_template('/reviews.html', logged_in=False, reviews=reviews)
 
 
 @app.route('/submit_review', methods=['POST'])
@@ -151,10 +152,11 @@ def submit_review():
 
         mongo.db.reviews.insert_one({
             'stars': stars,
-            'comment': comment
+            'comment': comment,
+            'username': current_user.username
         })
 
-        return redirect(url_for('profile'))
+        return redirect(url_for('employer.reviews'))
 
 
 app.register_blueprint(employer)
