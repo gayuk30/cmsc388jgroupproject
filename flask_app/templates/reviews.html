@@ -1,46 +1,64 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reviews</title>
-  </head>
-  <body>
-    <h1>All Reviews</h1>
-    {% if username %}
-    <p>Username: {{ username }}</p>
-    {% endif %} {% if reviews %} {% for review in reviews %}
-    <div>
-      <p>{{ review.username }}</p>
-      <p>{{ review.stars }}</p>
-      <p>{{ review.comment }}</p>
-    </div>
-    {% endfor %} {% else %}
-    <p>No reviews yet, why don't you leave one!</p>
-    {% endif %} {% if logged_in %}
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <header class="bg-blue-500 text-white p-4">
+        <h1 class="text-3xl font-bold text-center">All Reviews</h1>
+    </header>
 
-    <h2>Leave a Review</h2>
+    <main class="container mx-auto mt-4 p-4">
+        {% if username %}
+            <p class="text-lg">Username: <span class="font-semibold">{{ username }}</span></p>
+        {% endif %}
 
-    <form method="POST" action="/submit_review">
-      <label for="stars">Stars:</label>
-      <select name="stars" id="stars">
-        <option value="0">0</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
-      <br />
-      <label for="review">Comment:</label>
-      <textarea name="comment" id="comment" rows="4" cols="50"></textarea>
-      <br />
-      <input type="submit" value="Submit" />
-    </form>
+        {% if reviews %}
+            <div class="space-y-4">
+                {% for review in reviews %}
+                    <div class="p-4 bg-white rounded shadow">
+                        <p class="font-bold">{{ review.username }}</p>
+                        <p class="text-yellow-500">{{ '⭐' * (review.stars | int) }}</p>
+                        <p class="italic">{{ review.comment }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="mt-4">No reviews yet, why don't you leave one!</p>
+        {% endif %}
 
-    {% else %}
-    <p>
-      Please <a href="/login">log in</a> or <a href="/register">register </a>to
-      leave a review.
-    </p>
-    {% endif %}
-  </body>
+        {% if logged_in %}
+            <section class="mt-8">
+                <h2 class="text-2xl font-bold">Leave a Review</h2>
+                <form method="POST" action="/submit_review" class="mt-4 bg-white p-4 rounded shadow-lg">
+                    <div class="mb-4">
+                        <label for="stars" class="block text-gray-700 text-sm font-bold mb-2">Stars:</label>
+                        <select name="stars" id="stars" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="mb-6">
+                        <label for="review" class="block text-gray-700 text-sm font-bold mb-2">Comment:</label>
+                        <textarea name="comment" id="comment" rows="4" cols="50" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                    </div>
+                    <input type="submit" value="Submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                </form>
+            </section>
+        {% else %}
+            <p class="mt-4">
+                Please <a href="/login" class="text-blue-500 hover:text-blue-700">log in</a> or <a href="/register" class="text-blue-500 hover:text-blue-700">register</a> to leave a review.
+            </p>
+        {% endif %}
+    </main>
+</body>
 </html>
+
