@@ -1,3 +1,8 @@
+## Description of your final project idea:
+
+Personal website for a fictional person named “Bob” that shows off the different companies and roles he’s worked. Also, people he has worked with in the past can leave reviews about him.
+
+
 ## Describe what functionality will only be available to logged-in users:
 
 Only logged in users can add jobs "Bob" has worked and give reviews about him. (Must be logged-in to have access to the work and review forms)
