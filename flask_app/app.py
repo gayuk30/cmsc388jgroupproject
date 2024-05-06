@@ -14,6 +14,8 @@ app.config['GOOGLE_MAPS_API_KEY'] = os.getenv('GOOGLE_MAPS_API_KEY')
 app.config['MONGO_URI'] = 'mongodb+srv://yer:HUtySU4t80h55iXJ@cluster0.vz6chxl.mongodb.net/Cluster0?retryWrites=true&w=majority&appName=Cluster0'
 app.config['SECRET_KEY'] = str(os.urandom(16))
 
+map_key = 'AIzaSyDnkEB-hxIZed3SMijn5-B2RxB_tR36ONM'
+
 mongo = PyMongo(app, tlsCAFile=certifi.where())
 
 login_manager = LoginManager(app)
@@ -34,8 +36,8 @@ def load_user(user_id):
 def profile():
     jobs = mongo.db.jobs.find({})
     job_data = []
-
     for job in jobs:
+        print(job)
         city = job.get('city')
         
         if city is not None:
@@ -43,7 +45,7 @@ def profile():
                 'https://maps.googleapis.com/maps/api/geocode/json',
                 params={
                     'address': city,
-                    'key': app.config['GOOGLE_MAPS_API_KEY']
+                    'key': map_key
                 }
             )
             results = response.json()
@@ -58,6 +60,11 @@ def profile():
                     'position': job['position']
                 })
             else:
+                job_data.append({
+                    'description': job['description'],
+                    'company': job['company'],
+                    'position': job['position']
+                })
                 print(f"Geocoding failed for {city} with status {results['status']}")
 
     return render_template('profile.html', jobs=job_data)
@@ -76,7 +83,6 @@ def login():
         username = form.username.data
         password = form.password.data
         user = mongo.db.users.find_one({'username': username})
-        print(user)
         if user and bcrypt.check_password_hash(user['password'], password):
             # User found, log them in and redirect to reviews page
             login_user(User(username))
