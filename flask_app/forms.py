@@ -19,8 +19,10 @@ class JobForm(FlaskForm):
     company = StringField('Company', validators=[InputRequired()])
     position = StringField('Position', validators=[InputRequired()])
     description = TextAreaField('Description', validators=[InputRequired()])
-    city = StringField('City', validators=[InputRequired()])
+    latitude = StringField('Latitude', validators=[InputRequired()])
+    longitude = StringField('Longitude', validators=[InputRequired()])
     submit = SubmitField('Submit')
+
 
 class ReviewForm(FlaskForm):
     stars = SelectField('Stars', choices=[(str(i), str(i)) for i in range(6)], validators=[InputRequired()])

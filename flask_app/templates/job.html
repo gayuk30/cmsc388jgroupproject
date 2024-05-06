@@ -1,32 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>Job</title>
+    <meta charset="UTF-8">
+    <title>Job Form</title>
 </head>
-
-{% if current_user.is_authenticated %}
-  <h1>Job Form</h1>
-  <form method="POST" action="/job">
-    {{ form.csrf_token }}
-    <div>
-      <label for="company">Company:</label>
-      {{ form.company }}
-    </div>
-    <div>
-      <label for="position">Position:</label>
-      {{ form.position }}
-    </div>
-    <div>
-      <label for="description">Description:</label>
-      {{ form.description }}
-    </div>
-    <div>
-      <label for="city">City:</label>
-      {{ form.city }}
-    </div>
-    <div>
-      <input type="submit" value="Submit" />
-    </div>
-  </form>
-{% else %}
-  <h1>Job Form</h1>
-  <p>Please <a href="/login">log in</a> or <a href="/register">register</a> to access the job form.</p>
-{% endif %}
+<body>
+    {% if current_user.is_authenticated %}
+    <h1>Job Form</h1>
+    <form method="POST" action="/job">
+        {{ form.csrf_token }}
+        <div>
+            <label for="company">Company:</label>
+            {{ form.company }}
+        </div>
+        <div>
+            <label for="position">Position:</label>
+            {{ form.position }}
+        </div>
+        <div>
+            <label for="description">Description:</label>
+            {{ form.description }}
+        </div>
+        <div>
+            <label for="latitude">Latitude:</label>
+            {{ form.latitude }}
+        </div>
+        <div>
+            <label for="longitude">Longitude:</label>
+            {{ form.longitude }}
+        </div>
+        <div>
+            <input type="submit" value="Submit" />
+        </div>
+    </form>
+    {% else %}
+    <h1>Job Form</h1>
+    <p>Please <a href="/login">log in</a> or <a href="/register">register</a> to access the job form.</p>
+    {% endif %}
+</body>
+</html>

@@ -56,10 +56,12 @@
     <ul>
         {% for job in jobs %}
         <li>
-            <strong>{{ job.company }}</strong> - {{ job.position }}
-            <div><small>{{ job.description }}</small></div>
-            <div>Located in: {{ job.city }}</div>
+            <strong>{{ job.company }}</strong> - {{ job.position }}<br>
+            {{ job.description }}<br>
+            Location: Lat {{ job.latitude }}, Long {{ job.longitude }}
         </li>
         {% endfor %}
     </ul>
+{% else %}
+    <p>No job history available.</p>
 {% endif %}

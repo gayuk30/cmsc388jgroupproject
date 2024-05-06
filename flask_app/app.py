@@ -33,34 +33,8 @@ def load_user(user_id):
 @app.route('/')
 def profile():
     jobs = mongo.db.jobs.find({})
-    job_data = []
+    return render_template('profile.html', jobs=jobs)
 
-    for job in jobs:
-        city = job.get('city')
-        
-        if city is not None:
-            response = requests.get(
-                'https://maps.googleapis.com/maps/api/geocode/json',
-                params={
-                    'address': city,
-                    'key': app.config['GOOGLE_MAPS_API_KEY']
-                }
-            )
-            results = response.json()
-
-            if results['status'] == 'OK':
-                geometry = results['results'][0]['geometry']['location']
-                job_data.append({
-                    'lat': geometry['lat'],
-                    'lng': geometry['lng'],
-                    'description': job['description'],
-                    'company': job['company'],
-                    'position': job['position']
-                })
-            else:
-                print(f"Geocoding failed for {city} with status {results['status']}")
-
-    return render_template('profile.html', jobs=job_data)
 
 if __name__ == '__main__':
     app.run(debug=True)
@@ -116,23 +90,25 @@ app.register_blueprint(users)
 @employer.route('/job', methods = ['GET', 'POST'])
 def job():
     form = JobForm()
+    if request.method == 'POST' and form.validate():
+        company = form.company.data
+        position = form.position.data
+        description = form.description.data
+        latitude = form.latitude.data
+        longitude = form.longitude.data
 
-    if request.method == 'POST':
-        company = request.form['company']
-        position = request.form['position']
-        description = request.form['description']
-        city = request.form['city']
-        
         mongo.db.jobs.insert_one({
             'company': company,
             'position': position,
             'description': description,
-            'city': city
+            'latitude': latitude,
+            'longitude': longitude
         })
 
         return redirect(url_for('profile'))
-    
+
     return render_template('job.html', form=form)
+
 
 @employer.route('/reviews', methods=['GET', 'POST'])
 def reviews():
